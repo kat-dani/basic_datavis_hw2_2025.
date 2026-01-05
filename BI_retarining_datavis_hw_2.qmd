@@ -4,8 +4,20 @@ format: html
 editor: visual
 ---
 
-```{r}
+```{r start_chunk}
 
+library(gghalves, quietly = TRUE)
+library(ggridges)
+library(ggforce)
+library(patchwork)
+library(gghighlight)
+library(ggthemes)
+suppressPackageStartupMessages(library(ggExtra))
+suppressPackageStartupMessages(library(ggmosaic))
+suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(tidyverse))
+
+options(scipen = 999)
 ```
 
 ## 1

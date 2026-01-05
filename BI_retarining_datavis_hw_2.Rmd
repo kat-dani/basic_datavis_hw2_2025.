@@ -13,6 +13,10 @@ library(ggforce)
 library(patchwork)
 library(gghighlight)
 library(ggthemes)
+library(tidyplots)
+library(ggpattern)
+library(magick)
+library(treemapify)
 suppressPackageStartupMessages(library(ggExtra))
 suppressPackageStartupMessages(library(ggmosaic))
 suppressPackageStartupMessages(library(scales))
@@ -92,9 +96,23 @@ hogwarts_houses_x <- scale_x_discrete(
 
 ## 1
 
-```{r, fig.width=14, fig.height=9}
+```{r, fig.width=8, fig.height=6}
 
+long_exam_hogwarts <- hogwarts |>
+  pivot_longer(
+    ends_with("exam"), names_to = "Exam", values_to = "Score"
+  )
 
+long_exam_hogwarts |>
+  tidyplot(x = house, y = Score, color = Exam) |>
+  add_barstack_absolute()+
+  labs(
+    title = "Сумма баллов за экзамены по факультетам",
+    y = "Баллы",
+    x = "Факультет")
+
+# не смогла сделать его крупнее даже с настройками чанка, чтобы он оставался четким
+# Но сам код короче и проще, чем делать то же самое через geom_bar, тем более что для geom_bar нельзя указать две оси, он сам считает количество в указанных категориях
 
 ```
 
@@ -103,12 +121,71 @@ hogwarts_houses_x <- scale_x_discrete(
 
 ```{r, fig.width=14, fig.height=9}
 
+hogwarts_result_by_house_wand <- hogwarts |> 
+  group_by(house, wandCore) |> 
+  summarise(house_total_points = sum(result)) |> 
+  unite(`house and wand core`, house, wandCore, sep = " & ", remove = FALSE) |> 
+  ungroup()
+
+ggplot(hogwarts_result_by_house_wand, aes(area = house_total_points, fill = house_total_points, label = `house and wand core`)) +
+  geom_treemap() +
+  geom_treemap_text(fontface = "italic", colour = "white", place = "centre",
+                    grow = TRUE)+
+    labs(
+    title = "Количество баллов по факультетам и сердцевинам палочки",
+     fill = "Баллы"
+    )
+
 ```
+Вывод: treemap вписывает все категории в квадрат, сортируя от наибольшей по количеству к меньшей, видимо по правилу золотого сечения. Для заполнения градиента нужно указывать переменную, в которой содержится уже подсчитанное число. Подходит для тех случаев, когда не обязательно видеть точное соотношение групп, когда есть количественная переменная, по которой нужно показать градацию изменений в группах (квадратах)
+Мозаик-плот группирует категории в столбцы. Подсчет количества для ширины и длины столбика происходит автоматически, т.е. не нужно указывать, по какой переменной считать, т.к. считает количество записей. Этот тип графика подходит для тех случаев, когда нужно точнее увидеть соотношение между группами.
 
 ## 3
 
-```{r, fig.width=14, fig.height=9}
+```{r, fig.width=16, fig.height=12}
+
+students_5_course <- hogwarts |> 
+  mutate(wandCore = as.factor(wandCore), id = as.factor(id))|>
+  filter(course == 5)
+
+
+hogwarts_wandCore_colours <- c(
+      "phoenix feather" = "#ECB939",
+      "dragon heartstring" = "#C50000",
+      "unicorn hair" = "#ABABAB"
+    ) 
+
+hogwarts_wandCore_names <- c(
+      "phoenix feather" = "Перо феникса",
+      "dragon heartstring" = "Сердечная жила дракона",
+      "unicorn hair" = "Волос единорога"
+    ) 
+
+ggplot(students_5_course, aes(x=reorder(id, -result), y= result, colour = wandCore)) +
+  geom_segment(aes(y=0, yend=result), color="grey") +
+  geom_point( size=4) +
+  scale_colour_manual(
+    values = hogwarts_wandCore_colours,
+    name = "Сердцевина палочки", 
+labels = hogwarts_wandCore_names
+  ) +
+  xlab("id Студента") +
+  ylab("Количество баллов за учебный год")+
+    labs(
+    title = "Количество баллов по сердцевинам палочки студентов 5-го курса")+
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  )
 
 ```
 
+## 4
 
+```{r, fig.width=14, fig.height=9}
+
+
+
+```
