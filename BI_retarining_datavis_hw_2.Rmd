@@ -1,0 +1,114 @@
+---
+title: "BI_retarining_datavis_hw_2"
+output: html_document
+date: "2026-01-05"
+---
+
+```{r start_chunk, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+                      
+library(gghalves, quietly = TRUE)
+library(ggridges)
+library(ggforce)
+library(patchwork)
+library(gghighlight)
+library(ggthemes)
+suppressPackageStartupMessages(library(ggExtra))
+suppressPackageStartupMessages(library(ggmosaic))
+suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(tidyverse))
+
+options(scipen = 999)
+```
+
+```{r data_reading, include=FALSE}
+hogwarts <- read_csv("data/hogwarts_2025.csv")
+```
+
+```{r custom_theme_set, include=FALSE}
+theme_custom <- theme(
+    axis.text = element_text(size = 20),
+    axis.title = element_text(size = 25),
+    plot.title = element_text(size = 30, hjust = 0.5),
+    plot.subtitle = element_text(size = 20, hjust = 0.5),
+    legend.title = element_text(size = 20),
+    legend.text = element_text(size = 15),
+    panel.background = element_rect(fill = "white"), 
+    panel.grid = element_blank()
+  )
+
+theme_set(theme_custom)
+```
+
+
+```{r translations_and_colours, include=FALSE}
+exams_translating <- c(
+ "Defence against the dark arts exam" = "ЗОТИ",
+ "Flying exam" = "Полеты",
+ "Astronomy exam" = "Астрономия",
+ "Herbology exam" = "Травология",
+ "Divinations exam" = "Прорицания",
+ "Charms exam" = "Заклинания",
+ "History of magic exam" = "История магии",
+ "Arithmancy exam" = "Нумерология",                   
+ "Muggle studies exam" = "Магловедение",
+ "Study of ancient runes exam" = "Древние руны",
+ "Transfiguration exam" = "Трансфигурация",
+ "Potions exam" = "Зельеварение",                      
+ "Care of magical creatures exam" = "Уход за магическими существами"
+)
+
+hogwarts_houses_names <- c(
+      "Gryffindor" = "Гриффиндор",
+      "Hufflepuff" = "Пуффендуй",
+      "Ravenclaw" = "Когтевран",
+      "Slytherin" = "Слизерин"
+    )
+
+hogwarts_houses_colours <- c(
+      "Gryffindor" = "#C50000",
+      "Hufflepuff" = "#ECB939",
+      "Ravenclaw" = "#41A6D9",
+      "Slytherin" = "#1F5D25"
+    )
+
+hogwarts_houses_fill <- scale_fill_manual(
+    name = "Факультет",
+    labels = hogwarts_houses_names,
+    values = hogwarts_houses_colours
+  )
+
+hogwarts_houses_colour <- scale_colour_manual(
+    name = "Факультет",
+    labels = hogwarts_houses_names,
+    values = hogwarts_houses_colours
+  )
+
+hogwarts_houses_x <- scale_x_discrete(
+    name = "Факультет",
+    labels = hogwarts_houses_names
+)
+```
+
+## 1
+
+```{r, fig.width=14, fig.height=9}
+
+
+
+```
+
+
+## 2
+
+```{r, fig.width=14, fig.height=9}
+
+```
+
+## 3
+
+```{r, fig.width=14, fig.height=9}
+
+```
+
+
