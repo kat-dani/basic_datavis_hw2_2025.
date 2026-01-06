@@ -295,9 +295,54 @@ ggplot(result_per_week_df_1)+
 ```
 ## 6
 
-```{r}
+```{r, fig.width=18, fig.height=15}
 
+set.seed(2025)
 
+# ggplot(hogwarts)+
+#   geom_bar(aes(x = house, fill = house), colour = "black")+
+#   hogwarts_houses_x+
+#   labs(
+#     title = "Число студентов на факультетах Хогвартса",
+#     y = "Число студентов"
+#        )
 
+# График-подложка
+plotTemplate <- ggplot(result_per_week_df)+
+  labs(title = "Histogram",
+         y = "Баллы")+
+theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 18),
+    plot.title = element_text(size = 20, hjust = 0.5),
+    panel.background = element_rect(fill = "white"), 
+    panel.grid = element_blank()
+  )
 
+# Функция для подбора цвета
+histBinCustom <- function(fill_n,
+                          mapping = aes(x = week_number, y = result_per_week), 
+                          color="black", ...){
+  
+  geom_col(mapping = mapping, colour = color, fill = fill_n)
+  
+}
+
+# Создание конвеера
+# res_colours <- colours() # не поняла, для чего эта строка
+res_colours <- colours_[colours_ |> #R не смог скнитить из-за не найденного объекта colours_
+str_detect("grey|gray|black|white", negate = TRUE)]|>
+sample(size = 36)
+
+histList <- map(res_colours, 
+                \(x) plotTemplate+ 
+                  histBinCustom(fill_n=x)+
+                  scale_x_discrete(name = paste0(x, " colour")))
+
+# Вывод итогового графика
+wrap_plots(histList)+
+  plot_annotation(
+    title = "Расрпеделение баллов студентов Хогвартса по неделям",
+    subtitle = "2024–2025 учебный год"
+  )
 ```
